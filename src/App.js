@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Header from "./Components/Header";
+import Categories from "./Categories";
+import Cart from "./Components/Cart";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      style={{
+        backgroundColor: "#232F3E", // Amazon's background color
+        minHeight: "100vh",
+      }}
+    >
+      <section>
+        <Header />
+      </section>
+      <hr />
+      <Categories />
+      <hr />
+      <Cart />
     </div>
   );
 }
