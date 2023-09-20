@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { fetchProductsInCategory } from "../api";
 import { Card } from "antd";
 import Meta from "antd/es/card/Meta";
-// import { initializeApp } from "firebase/app";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../Components/firebase";
 function Jewelery() {
@@ -28,7 +27,6 @@ function Jewelery() {
 
       // Create a new document with the selected item data in the 'cart' collection
       await addDoc(cartCollection, item);
-
       console.log("Item added to cart:", item);
     } catch (error) {
       console.error("Error adding item to cart:", error);
