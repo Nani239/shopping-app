@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { fetchProductsInCategory } from "../api";
 import { Card, Button, Modal, Image, Badge } from "antd";
 import Meta from "antd/es/card/Meta";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../Components/firebase";
 import { useNavigate } from "react-router-dom";
 function Jewelery() {
@@ -42,11 +42,34 @@ function Jewelery() {
       // Create a reference to the 'cart' collection in Firestore
       const cartCollection = collection(db, "cart");
 
-      // Create a new document with the selected item data in the 'cart' collection
-      await addDoc(cartCollection, item);
-      console.log("Item added to cart:", item);
+      // Check if the item is already in the cart
+      const querySnapshot = await getDocs(cartCollection);
+      const cartItems = querySnapshot.docs.map((doc) => doc.data());
+      const existingItem = cartItems.find(
+        (cartItem) => cartItem.id === item.id
+      );
+
+      if (existingItem) {
+        // If the item is already in the cart, increase its quantity by 1
+        const updatedQuantity = existingItem.quantity + 1;
+
+        // Find the reference to the existing cart item
+        const existingCartItemRef = querySnapshot.docs.find(
+          (doc) => doc.data().id === existingItem.id
+        ).ref;
+
+        // Update the quantity in Firestore
+        await updateDoc(existingCartItemRef, { quantity: updatedQuantity });
+
+        console.log("Item quantity updated:", item);
+      } else {
+        // If the item is not in the cart, add it with a quantity of 1
+        await addDoc(cartCollection, { ...item, quantity: 1 });
+
+        console.log("Item added to cart:", item);
+      }
     } catch (error) {
-      console.error("Error adding item to cart:", error);
+      console.error("Error updating/adding item to cart:", error);
     }
   };
 
@@ -74,9 +97,9 @@ function Jewelery() {
               }}
               alt={jelr.title}
               src={jelr.image}
+              onClick={() => handleCardClick(jelr)} // Handle card click
             />
           }
-          onClick={() => handleCardClick(jelr)} // Handle card click
         >
           <Meta
             title={jelr.title}

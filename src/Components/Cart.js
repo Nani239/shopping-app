@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
 import Modal from "antd/es/modal/Modal";
 import { db } from "./firebase";
 import { Button, List, Image } from "antd";
@@ -23,7 +23,11 @@ function Cart() {
       const querySnapshot = await getDocs(cartCollection);
 
       // Extract the cart items from the query result
-      const products = querySnapshot.docs.map((doc) => doc.data());
+      const products = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        data.id = doc.id; // Include the document ID
+        return data;
+      });
 
       const refs = querySnapshot.docs.map((doc) => doc.ref);
       setItemRefs(refs);
@@ -59,6 +63,51 @@ function Cart() {
       setCartItems(updatedCartItems);
     } catch (error) {
       console.error("Error deleting cart item:", error);
+    }
+  };
+
+  const updateQuantity = async (itemId, newQuantity) => {
+    try {
+      // Find the index of the item with the given itemId
+      const index = cartItems.findIndex((item) => item.id === itemId);
+
+      if (index === -1) {
+        console.error("Item not found in cart:", itemId);
+        return;
+      }
+
+      // Create a reference to the Firestore document
+      const cartItemDocRef = itemRefs[index];
+
+      // Update the Firestore document with the new quantity
+      await updateDoc(cartItemDocRef, {
+        quantity: newQuantity,
+      });
+
+      // Update the cartItems state with the new quantity
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[index].quantity = newQuantity;
+      setCartItems(updatedCartItems);
+    } catch (error) {
+      console.error("Error updating cart item quantity:", error);
+    }
+  };
+
+  const increaseQuantity = (itemId) => {
+    const index = cartItems.findIndex((item) => item.id === itemId);
+    if (index !== -1) {
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[index].quantity += 1;
+      updateQuantity(itemId, updatedCartItems[index].quantity);
+    }
+  };
+
+  const decreaseQuantity = (itemId) => {
+    const index = cartItems.findIndex((item) => item.id === itemId);
+    if (index !== -1 && cartItems[index].quantity > 1) {
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[index].quantity -= 1;
+      updateQuantity(itemId, updatedCartItems[index].quantity);
     }
   };
 
@@ -101,7 +150,20 @@ function Cart() {
               <List.Item.Meta
                 avatar={<Image src={item.image} alt="item" width={50} />}
                 title={item.title}
-                description={`Price: $${item.price}`}
+                description={
+                  <div>
+                    <p>{`Price: $${item.price}`}</p>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Button onClick={() => decreaseQuantity(item.id)}>
+                        -
+                      </Button>
+                      <h3 style={{ margin: "0 8px" }}>{item.quantity}</h3>
+                      <Button onClick={() => increaseQuantity(item.id)}>
+                        +
+                      </Button>
+                    </div>
+                  </div>
+                }
               />
             </List.Item>
           )}
