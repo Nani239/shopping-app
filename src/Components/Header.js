@@ -13,10 +13,10 @@ function Header() {
         <img
           src="https://pngimg.com/uploads/amazon/amazon_PNG11.png"
           alt="amazon"
-          width={100}
-          style={{ padding: "20px" }}
+          width={120}
+          style={{ padding: "20px", cursor: "pointer" }}
         />
-        <p>
+        <p style={{ cursor: "pointer" }}>
           <span>Hello</span>
           <br />
           <strong>Select the adress</strong>
@@ -33,12 +33,12 @@ function Header() {
             paddingLeft: "30px",
           }}
         />
-        <p>
+        <p style={{ cursor: "pointer" }}>
           <span>Hello, Signin</span>
           <br />
           <strong>Accounts & Lists</strong>
         </p>
-        <p style={{ paddingLeft: "30px" }}>
+        <p style={{ paddingLeft: "30px", cursor: "pointer" }}>
           <span>returns</span>
           <br />
           <strong>& Orders</strong>

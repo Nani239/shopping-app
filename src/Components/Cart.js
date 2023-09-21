@@ -2,16 +2,18 @@ import React, { useState, useEffect } from "react";
 import { collection, getDocs, deleteDoc } from "firebase/firestore";
 import Modal from "antd/es/modal/Modal";
 import { db } from "./firebase";
+import { Button, List, Image } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 function Cart() {
-  // const [cartItems, setCartItems] = useState([]);
   const [showPop, setShowPop] = useState(false);
-  const [state, setState] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const [itemRefs, setItemRefs] = useState([]); // Store Firestore document references
 
   const onClose = () => {
     setShowPop(false);
   };
+
   const fetchCartItems = async () => {
     try {
       // Create a reference to the 'cart' collection in Firestore
@@ -27,33 +29,16 @@ function Cart() {
       setItemRefs(refs);
 
       // Set the cartItems state to display the items
-      // setCartItems(products);
-      // cartItems = products;
-      setState(products);
-      // console.log("products in cart", cartItems);
-      console.log("products", products);
+      setCartItems(products);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
   };
-  // const deleteCartItem = async (index) => {
-  //   try {
-  //     // const cartItemDocRef = doc(db, "cart", itemIdString);
-  //     const cartItemDocRef = itemRefs[index];
-  //     await deleteDoc(cartItemDocRef);
-
-  //     // Update the cartItems state to remove the deleted item
-  //     const updatedCartItems = state.filter((item, i) => i !== index);
-  //     setState(updatedCartItems);
-  //   } catch (error) {
-  //     console.error("Error deleting cart item:", error);
-  //   }
-  // };
 
   const deleteCartItem = async (itemId) => {
     try {
       // Find the index of the item with the given itemId
-      const index = state.findIndex((item) => item.id === itemId);
+      const index = cartItems.findIndex((item) => item.id === itemId);
 
       if (index === -1) {
         console.error("Item not found in cart:", itemId);
@@ -68,10 +53,10 @@ function Cart() {
 
       // Update the cartItems state to remove the deleted item
       const updatedCartItems = [
-        ...state.slice(0, index),
-        ...state.slice(index + 1),
+        ...cartItems.slice(0, index),
+        ...cartItems.slice(index + 1),
       ];
-      setState(updatedCartItems);
+      setCartItems(updatedCartItems);
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
@@ -79,36 +64,48 @@ function Cart() {
 
   const onOpen = () => {
     setShowPop(true);
-    console.log("Clicked");
     fetchCartItems();
-    console.log(state, "state");
   };
+
   useEffect(() => {
-    console.log(state, "state");
-  }, [state]);
+    console.log(cartItems, "cartItems");
+  }, [cartItems]);
 
   return (
     <div>
-      <p onClick={onOpen} style={{ cursor: "pointer" }}>
-        Cart
-      </p>
+      <div
+        style={{ cursor: "pointer", display: "flex", paddingLeft: "20px" }}
+        onClick={onOpen}
+      >
+        <ShoppingCartOutlined style={{ fontSize: "40px" }} />
+        <p style={{ fontSize: "1.2rem" }}>Cart</p>
+      </div>
 
       <Modal
-        title="Basic Modal"
+        title="Shopping Cart"
+        visible={showPop}
         onOk={onClose}
         onCancel={onClose}
-        onClose={onClose}
-        open={showPop}
       >
-        {state.map((item, index) => (
-          <div key={item.id}>
-            <p>{item.title}</p>
-            <img src={item.image} alt="item" width={30} />
-            {/* <button onClick={() => deleteCartItem(index)}>Delete</button> */}
-            <button onClick={() => deleteCartItem(item.id)}>Delete</button>
-            {/* <span>({item.count})</span>  */}
-          </div>
-        ))}
+        <List
+          dataSource={cartItems}
+          renderItem={(item) => (
+            <List.Item
+              key={item.id}
+              actions={[
+                <Button type="danger" onClick={() => deleteCartItem(item.id)}>
+                  Remove
+                </Button>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={<Image src={item.image} alt="item" width={50} />}
+                title={item.title}
+                description={`Price: $${item.price}`}
+              />
+            </List.Item>
+          )}
+        />
       </Modal>
     </div>
   );

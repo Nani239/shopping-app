@@ -26,17 +26,41 @@ function Categories() {
           cursor: "pointer",
         }}
       >
-        <p onClick={() => handleCategoryChange("mens-clothing")}>
+        <p
+          onClick={() => handleCategoryChange("mens-clothing")}
+          style={{
+            color: selectedCategory === "mens-clothing" ? "#01869B" : "#fff",
+          }}
+        >
           MensClothing
         </p>
         <br />
-        <p onClick={() => handleCategoryChange("jewelery")}>Jewelery </p>
+        <p
+          onClick={() => handleCategoryChange("jewelery")}
+          style={{
+            color: selectedCategory === "jewelery" ? "#01869B" : "#fff",
+          }}
+        >
+          Jewelery{" "}
+        </p>
         <br />
-        <p onClick={() => handleCategoryChange("womens-clothing")}>
+        <p
+          onClick={() => handleCategoryChange("womens-clothing")}
+          style={{
+            color: selectedCategory === "womens-clothing" ? "#01869B" : "#fff",
+          }}
+        >
           WomensClothing{" "}
         </p>
         <br />
-        <p onClick={() => handleCategoryChange("electronics")}>Electronics </p>
+        <p
+          onClick={() => handleCategoryChange("electronics")}
+          style={{
+            color: selectedCategory === "electronics" ? "#01869B" : "#fff",
+          }}
+        >
+          Electronics{" "}
+        </p>
         <br />
       </div>
       <div>
