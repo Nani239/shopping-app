@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-// import { Link } from "react-router-dom";
-// import { Button } from "antd";
 import Products from "./Components/Products";
 import Jewelery from "./Categories/Jewelery";
 import MensClothing from "./Categories/MensClothing";
 import WomensClothing from "./Categories/WomensClothing";
 import Electronics from "./Categories/Electronics";
-// import { StoreProvider } from "./StoreContext";
 
 function Categories() {
   const [selectedCategory, setSelectedCategory] = useState("products");

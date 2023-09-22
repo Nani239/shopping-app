@@ -33,37 +33,25 @@ function WomensClothing() {
   };
   const handBuy = () => {
     // Navigate to the buying page when "Buy Now" is clicked
-    navigate("/Purchage");
+    navigate("/Purchage", { state: { selectedProduct: [selectedProduct] } });
   };
   const addToCart = async (item) => {
     try {
-      // Create a reference to the 'cart' collection in Firestore
       const cartCollection = collection(db, "cart");
-
-      // Check if the item is already in the cart
       const querySnapshot = await getDocs(cartCollection);
       const cartItems = querySnapshot.docs.map((doc) => doc.data());
       const existingItem = cartItems.find(
         (cartItem) => cartItem.id === item.id
       );
-
       if (existingItem) {
-        // If the item is already in the cart, increase its quantity by 1
         const updatedQuantity = existingItem.quantity + 1;
-
-        // Find the reference to the existing cart item
         const existingCartItemRef = querySnapshot.docs.find(
           (doc) => doc.data().id === existingItem.id
         ).ref;
-
-        // Update the quantity in Firestore
         await updateDoc(existingCartItemRef, { quantity: updatedQuantity });
-
         console.log("Item quantity updated:", item);
       } else {
-        // If the item is not in the cart, add it with a quantity of 1
         await addDoc(cartCollection, { ...item, quantity: 1 });
-
         console.log("Item added to cart:", item);
       }
     } catch (error) {

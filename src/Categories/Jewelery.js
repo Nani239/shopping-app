@@ -35,7 +35,7 @@ function Jewelery() {
   };
   const handBuy = () => {
     // Navigate to the buying page when "Buy Now" is clicked
-    navigate("/Purchage");
+    navigate("/Purchage", { state: { selectedProduct: [selectedProduct] } });
   };
   const addToCart = async (item) => {
     try {

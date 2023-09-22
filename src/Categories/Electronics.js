@@ -1,9 +1,10 @@
+/*eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { fetchProductsInCategory } from "../api";
-import { Card, Button, Modal, Image, Badge} from "antd";
+import { Card, Button, Modal, Image, Badge } from "antd";
 import { collection, addDoc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../Components/firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Meta from "antd/es/card/Meta";
 
 // const { Meta } = Card;
@@ -12,9 +13,9 @@ function Electronics() {
   const [electronicsProducts, setElectronicsProducts] = useState([]);
   const [pop, setPop] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState("");
-  // const [quantity, setQuantity] = useState(1); // Default quantity is 1
   const navigate = useNavigate(); // Initialize useHistory
-  // const [cart, setCart] = useState([]);
+  const location = useLocation();
+  const data = location.state;
 
   useEffect(() => {
     // Fetch products with the category "electronics" when the component mounts
@@ -39,53 +40,26 @@ function Electronics() {
   };
   const handBuy = () => {
     // Navigate to the buying page when "Buy Now" is clicked
-    navigate("/Purchage");
+    navigate("/Purchage", { state: { selectedProduct: [selectedProduct] } });
   };
 
-  // const addToCart = async (item) => {
-  //   try {
-  //     // Create a reference to the 'cart' collection in Firestore
-  //     const cartCollection = collection(db, "cart");
-
-  //     // Create a new document with the selected item data and quantity in the 'cart' collection
-  //     await addDoc(cartCollection, {
-  //       ...item,
-  //       quantity: quantity, // Include the selected quantity
-  //     });
-  //     console.log("Item added to cart:", item);
-  //   } catch (error) {
-  //     console.error("Error adding item to cart:", error);
-  //   }
-  // };
   const addToCart = async (item) => {
     try {
-      // Create a reference to the 'cart' collection in Firestore
       const cartCollection = collection(db, "cart");
-
-      // Check if the item is already in the cart
       const querySnapshot = await getDocs(cartCollection);
       const cartItems = querySnapshot.docs.map((doc) => doc.data());
       const existingItem = cartItems.find(
         (cartItem) => cartItem.id === item.id
       );
-
       if (existingItem) {
-        // If the item is already in the cart, increase its quantity by 1
         const updatedQuantity = existingItem.quantity + 1;
-
-        // Find the reference to the existing cart item
         const existingCartItemRef = querySnapshot.docs.find(
           (doc) => doc.data().id === existingItem.id
         ).ref;
-
-        // Update the quantity in Firestore
         await updateDoc(existingCartItemRef, { quantity: updatedQuantity });
-
         console.log("Item quantity updated:", item);
       } else {
-        // If the item is not in the cart, add it with a quantity of 1
         await addDoc(cartCollection, { ...item, quantity: 1 });
-
         console.log("Item added to cart:", item);
       }
     } catch (error) {

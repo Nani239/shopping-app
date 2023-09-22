@@ -1,9 +1,16 @@
+/*eslint-disable no-unused-vars */
 import Search from "antd/es/input/Search";
 import React from "react";
 import Cart from "./Cart";
-// import {ShoppingCartOutlined} from 'antd'
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+  const navigate = useNavigate(); // Initialize useHistory
+  const handleOrdersClick = () => {
+    console.log("my Orders clicked");
+    navigate("/MyOrders");
+  };
+
   return (
     <div>
       <header
@@ -38,7 +45,10 @@ function Header() {
           <br />
           <strong>Accounts & Lists</strong>
         </p>
-        <p style={{ paddingLeft: "30px", cursor: "pointer" }}>
+        <p
+          style={{ paddingLeft: "30px", cursor: "pointer" }}
+          onClick={handleOrdersClick}
+        >
           <span>returns</span>
           <br />
           <strong>& Orders</strong>
