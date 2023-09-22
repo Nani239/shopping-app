@@ -21,7 +21,6 @@ function MyOrders() {
 
   return (
     <div>
-      <h1>My Orders</h1>
       <ul>
         {orders && orders.length > 0 ? (
           orders.map((order, index) => (
