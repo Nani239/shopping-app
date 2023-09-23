@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchProducts } from "../api";
-import { Card, Modal, Button, Image, Badge } from "antd";
+import { Card, Modal, Button, Image, Badge, Rate } from "antd";
 import { collection, addDoc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { useNavigate } from "react-router-dom";
@@ -11,12 +11,19 @@ function Products() {
   const [pop, setPop] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState("");
   const navigate = useNavigate(); // Initialize useHistory
+
   useEffect(() => {
     // Fetch products when the component mounts
     fetchProducts()
       .then((data) => {
-        setProducts(data);
-        console.log(data, "Products");
+        // Generate random ratings for each product
+        const productsWithRandomRatings = data.map((product) => ({
+          ...product,
+          rating: generateRandomRating(),
+        }));
+
+        setProducts(productsWithRandomRatings);
+        console.log(productsWithRandomRatings, "Products with Ratings");
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
@@ -60,6 +67,12 @@ function Products() {
       console.error("Error updating/adding item to cart:", error);
     }
   };
+
+  // Function to generate a random rating between 0 and 5
+  const generateRandomRating = () => {
+    return Math.random() * 5;
+  };
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       {products.map((product) => (
@@ -92,9 +105,8 @@ function Products() {
             title={product.title}
             description={`Price: $${product.price}`}
             style={{ textAlign: "center" }}
-
-            // description={`Release Date: ${product.description}`}
           />
+          <Rate allowHalf defaultValue={product.rating} />
         </Card>
       ))}
       {pop && (
@@ -131,6 +143,7 @@ function Products() {
                 showZero
                 style={{ marginBottom: "16px" }}
               />
+              <Rate allowHalf defaultValue={selectedProduct?.rating} />
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
                   type="primary"

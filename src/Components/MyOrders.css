@@ -1,0 +1,72 @@
+/* MyOrders.css */
+
+.my-orders-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.my-orders-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.order-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.order-card {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-image img {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 16px;
+}
+
+.product-details {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #666;
+}
+
+.rating-text {
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.order-details {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 16px;
+}
+
+.order-info {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin: 0 16px;
+}
